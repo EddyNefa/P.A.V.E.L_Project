@@ -55,6 +55,18 @@ def pitchfork(F,param,fileName,encoded):
 	out.write(foo)
 	out.close()
 
+
+	f = open(fileName,'r')
+	lin = f.readlines()
+	f.close()
+	f = open(fileName,'w')
+	del lin[0]
+	foo = ''
+	for la in lin:
+		foo += la
+	f.write(foo)
+	f.close
+
 def gen(file,param,index):
 	f = open(file,'r')
 	lines = f.readlines()

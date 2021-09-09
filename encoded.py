@@ -54,6 +54,16 @@ def encoded(out,alg):
 
 		file.write(foo)
 
+	f = open(out,'r')
+	lin = f.readlines()
+	del lin[0]
+	f.close()
+	foo = ''
+	f = open(out,'w')
+	for l in lin:
+		foo += l
+	f.write(foo)
+	f.close()
 
 def md5(line, encoding='utf-8'):
 	hash = hashlib.md5()
