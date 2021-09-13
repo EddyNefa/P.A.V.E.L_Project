@@ -2,6 +2,7 @@
 
 import os
 import codecs
+import isascii
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -25,6 +26,8 @@ def battery(F,param,fileName,encoded):
 	file = open(fileName, 'a')
 
 	for line in fileLines:
+		if not (isascii.isascii(line)):
+			continue
 		for l in params:
 			payload += l +'=' + line
 			payload = payload.replace('\n','')

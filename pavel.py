@@ -16,8 +16,8 @@ import fuzz
 import req
 
 warnings.filterwarnings("ignore", message="""Caught 'unbalanced parenthesis at position 119' compiling regex""", category=UserWarning)
-
 readline.parse_and_bind('tab: complete')
+
 def main():
 
 	banner = '           _............              ..-------.......\n'

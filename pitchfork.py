@@ -2,6 +2,7 @@
 
 import os
 import codecs
+import isascii
 
 def pitchfork(F,param,fileName,encoded):
 
@@ -42,6 +43,9 @@ def pitchfork(F,param,fileName,encoded):
 			else:
 				bar += '&'
 
+			if not(isascii.isascii(bar)):
+				continue
+
 			foo += bar.replace('\n','')
 
 		foo += '\n'
@@ -68,11 +72,15 @@ def pitchfork(F,param,fileName,encoded):
 	f.close
 
 def gen(file,param,index):
-	f = open(file,'r')
-	lines = f.readlines()
-	f.close()
+	try:
+		f = open(file,'r')
+		lines = f.readlines()
+		f.close()
 
-	return param +'='+ lines[index]
+		return param +'='+ lines[index]
+
+	except:
+		return None
 
 
 if __name__ == '__main__':

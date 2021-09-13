@@ -4,6 +4,7 @@ import hashlib
 import base64
 import os
 import codecs
+import isascii
 
 def encoded(out,alg):
 
@@ -18,6 +19,9 @@ def encoded(out,alg):
 	with open(out,'a') as file:
 		file.seek(0)
 		for line in f:
+			if not (isascii.isascii(line)):
+				continue
+
 			try:
 				if (alg.upper() == "MD5"):
 					foo += md5(line) + '\n'
