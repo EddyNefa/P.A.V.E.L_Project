@@ -20,26 +20,30 @@ readline.parse_and_bind('tab: complete')
 
 def main():
 
-	banner = '           _............              ..-------.......\n'
-	banner +='         :              \....-------..\                `\n'
-	banner +='        :                                                :.\n'
-	banner +='      .:`            ...-----....--..........--:.         .:\n'
-	banner +='      /      .--...`````                          `..-/+   .-\n'
-	banner +='     :` ::-.`                                          `:. `\n'
-	banner +='     / .+`                       .                       /` /\n'
-	banner +='    :` /`                       . -                      `/ +\n'
-	banner +='    + :`                       /`   \                     + +\n'
-	banner +='   -- /                  .......    `......               + +\n'
-	banner +='   + --                  \                /               + /\n'
-	banner +='  .: /`                   -.           .-                 /`/`\n'
-	banner +='  .- /                      `/         :                  .:/`\n'
-	banner +='  -- :                       :         `-                 `//\n'
-	banner +='  ./ :                       :  .-``... /                 `:/\n'
-	banner +='   :-+                       :-``      ``                 :+-\n'
-	banner +='    `/- V 1.0                                 By EddyNefa -o`\n'
-	banner +='      ``..                                        -------.`\n'
-	banner +='          `````.....--------------.............```\n'
-	banner +='\tFor help: https://github.com/EddyNefa/P.A.V.E.L_Project '
+	banner ='                             :o+-                           \n'
+	banner+='                            hMhmN+                          \n'
+	banner+='                           hMy  mM/                         \n'
+	banner+='                          yMh    NN:                        \n'
+	banner+='                         oMd`    :NN-                       \n'
+	banner+='                        +Mm.      /Mm.                     \n'
+	banner+='                      +sMm.        +Mm+            \n'
+	banner+='           -syhddmNNmdhyo.          :shdmNNNmddhyo- \n'
+	banner+='          -MMo                                 +yMd  \n'       
+	banner+='          `hMd:  By EddyNefa          V  1. 0 `+NM+   \n'      
+	banner+='            :dMh-                            +mMy.     \n'     
+	banner+='              /mMy.                        /mMy.        \n'    
+	banner+='               `+mMs.                    :dMh-           \n'   
+	banner+='                 `oNN-                  oMd:              \n'  
+	banner+='                  `NM-                  yMs                \n' 
+	banner+='                  :MN                   :Mm                 \n'
+	banner+='                  sMy                   `NM-                \n'
+	banner+='                  mM:       -+ys/.       hMo                \n'
+	banner+='                 -MN`   ./sdmdsymmdo-    /Mm                \n'
+	banner+='                 oMh`-+hmmh+-`  `:odmmy/..MM.               \n'
+	banner+='                 :mmdmds:`          ./ymmdNd`               \n'
+	banner+='                  .::-                 `::-`'
+	banner+='\n'
+	banner+='For bugs https://github.com/EddyNefa/\n'
 
 	name = []
 	value = []
@@ -134,7 +138,7 @@ def main():
 
 		elif (words[0].upper() == 'SEND'):
 
-			if(len(words) != 6):
+			if(len(words) != 5):
 				print(colored('Wrong syntaxis','red'))
 				continue
 
@@ -142,20 +146,19 @@ def main():
 				print(colored('Wrong syntaxis','red'))
 				continue
 
-			if (words[4].upper() != 'AT'):
-				print(colored('Wrong syntaxis','red'))
-				continue
 
 			try:
-				port = int(words[5])
+				port = int(words[4])
 
 			except:
 				print(colored('Sir, the port must be a number','yellow'))
+				continue
 
 			if not (os.path.isfile(words[1])):
 				print(colored('File '+ words[1]+ " doesn't exist","red"))
 				continue
 
+			url = words[3]
 			file = open(words[1],'r')
 			lines = file.readlines()
 			ext = 0
@@ -164,14 +167,24 @@ def main():
 				t = len(lines)
 
 			executor = ThreadPoolExecutor(max_workers=t)
-			for l in lines:
-				ok = executor.submit(send.send,l,words[3],words[5])
-				if (not ok):
-					ext = 1
-					break
-			if (ext == 1):
+			requests.packages.urllib3.disable_warnings()
+
+			proxies = {
+			'http': 'http://127.0.0.1:' + str(port),
+			'https': 'https://127.0.0.1:' + str(port),
+			}
+
+			try:
+
+				s = requests.session()
+				s.proxies = proxies
+				r = s.get(url, proxies=proxies, verify=False)
+
+			except:
 				continue
 
+			for l in lines:
+				ok = executor.submit(send.send,l,url,str(port))
 
 
 		elif(words[0].upper() == 'FUZZ'):
@@ -470,7 +483,7 @@ def help():
 	print('\t\tYou can modify increase between the numbers with the increase keyword')
 	print('\t\tExample: gen 2-8 as numbers.txt increase=2')
 	print('\n\tSend: Send a get request with a file given to a proxy like: http://foo.com/<file>')
-	print('\t\tExample: send file.txt to https://github.com/EddyNefa at 8080')
+	print('\t\tExample: send file.txt to https://github.com/EddyNefa  8080')
 	print('\t\tNote that you must enter the entire url with the http(s)\n')
 	print('\tFuzz: An excelent way for making custom fuzzer files')
 	print('\t\t\nSyntaxis: fuzz <FILE(S)> with <MODE> PARAMS: <PARAM1>,<PARAM2>, ENCODE: (OPTIONAL) <ALGORITM> AS <OUTPUT>')
@@ -487,7 +500,8 @@ def help():
 	print('\t\tNote: Use -v to also grab versions and categories')
 	print('\t\tExample: wappalyze https://github.com/EddyNefa [-v]')
 	print('\n\tSet: Set a variable to use instead a tedious value')
-	print('\t\tNote: Only one is permited (for now)')
+	print('\t\tExample: set target=https://github.com/EddyNefa')
+	print('\t\tNote: to call the variable use $ and the var name')
 	print('\t\tExample: set target=https://github.com/EddyNefa')
 	print('\n\tList: List available things:')
 	print('\n\t\t\t-Modes\n\t\t\t-Algs/Algoritms\n\t\t\t-Commands')
