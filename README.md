@@ -1,4 +1,3 @@
-![pavel](https://user-images.githubusercontent.com/65562177/134456672-722b008a-f702-435e-bf43-487b0ffb2dea.png)
 
 
 # **The P.A.V.E.L Project**
