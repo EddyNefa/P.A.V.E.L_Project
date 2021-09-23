@@ -2,6 +2,7 @@
 
 import requests
 import os
+from termcolor import colored
 
 def req(method,bool,out,to):
 
@@ -32,7 +33,7 @@ def req(method,bool,out,to):
 				f.write(foo)
 
 	except:
-		print('Invalid host or noting interesting to show')
+		print(colored('Invalid host or noting interesting to show','yellow'))
 
 
 

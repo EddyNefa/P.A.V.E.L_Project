@@ -61,7 +61,15 @@ def main():
 
 
 	while(True):
-		cm = input('#]> ')
+		try:
+			cm = input('#]> ')
+
+		except EOFError:
+			exit()
+
+		except KeyboardInterrupt:
+			print(colored('Press Ctrl+D or exit to exit','yellow'))
+			continue
 
 		#repalcing variable with value
 		if (len(name) == 1):
@@ -158,7 +166,7 @@ def main():
 				print(colored('File '+ words[1]+ " doesn't exist","red"))
 				continue
 
-			url = words[3]
+			url = checkHTTP(words[3])
 			file = open(words[1],'r')
 			lines = file.readlines()
 			ext = 0
@@ -344,12 +352,8 @@ def main():
 
 		elif(words[0].upper() == 'OPTIONS' or words[0].upper() == 'HEAD'):
 
-			if(len(words) < 3 or len(words) > 5):
+			if(len(words) < 2 or len(words) > 4):
 				print(colored('Wrong sintaxis','red'))
-				continue
-
-			if(words[1].upper() != 'TO'):
-				print(colored('Sir, you must include the '+chr(39)+'TO'+chr(39)+' keyword','yellow'))
 				continue
 
 			method = ''
@@ -362,10 +366,11 @@ def main():
 			out = ''
 			bool = False
 			if (' AS ' in cm.upper()):
-				out = words[4]
+				out = words[3]
 				bool = True
 
-			req.req(method,bool,out,words[2])
+			url = checkHTTP(words[1])
+			req.req(method,bool,out,url)
 
 
 		elif (words[0].upper() == 'WAPPALYZE'):
@@ -374,7 +379,7 @@ def main():
 				print(colored('Sir, please supply a target','red'))
 				continue
 
-			target = words[1]
+			target = checkHTTP(words[1])
 			verbose = False
 			if (len(words) == 3):
 				v =  words[2]
@@ -447,33 +452,7 @@ def main():
 			exit()
 
 		else:
-			err = 1
-			com = ['cat','ls','echo','rm','clear','cp','wc','searchsploit','gobuster']
-			for c in com:
-				if (words[0] == c):
-					err = 0
-					break
-
-			if (words[0] == ''):
-				continue
-
-			if (err != 0):
-				print(colored('Unknown command: '+words[0],'red'))
-				continue
-
-			else:
-				err = 1
-				badThings = [';','&','\'','|','`','$','@']
-				for bad in badThings:
-					if (bad in cm):
-						err = 0
-						break
-
-				if (err != 1):
-					print(colored("Sorry sir, you can't do that","red"))
-					continue
-				else:
-					os.system('/usr/bin/'+cm)
+			os.system('/usr/bin/'+cm)
 
 
 def help():
@@ -483,18 +462,17 @@ def help():
 	print('\t\tYou can modify increase between the numbers with the increase keyword')
 	print('\t\tExample: gen 2-8 as numbers.txt increase=2')
 	print('\n\tSend: Send a get request with a file given to a proxy like: http://foo.com/<file>')
-	print('\t\tExample: send file.txt to https://github.com/EddyNefa  8080')
-	print('\t\tNote that you must enter the entire url with the http(s)\n')
-	print('\tFuzz: An excelent way for making custom fuzzer files')
-	print('\t\t\nSyntaxis: fuzz <FILE(S)> with <MODE> PARAMS: <PARAM1>,<PARAM2>, ENCODE: (OPTIONAL) <ALGORITM> AS <OUTPUT>')
+	print('\t\tExample: send file.txt to https://github.com/EddyNefa 8080')
+	print("\n\tFuzz: Prepare custom fuzzer files with different options (as burp intruder's modes)")
+	print('\n\t\tSyntaxis: fuzz <FILE(S)> with <MODE> PARAMS: <PARAM1>,<PARAM2>, ENCODE: (OPTIONAL) <ALGORITM> AS <OUTPUT>')
 	print('\t\tMode:\n\t\t\tBattery: same file in all params (<PARAM1>=FILE,<PARAM2>=FILE)')
 	print('\t\t\tPitchfork: each param needs a different file (<PARM1>=FILE1<PARAM2>=FILE2)')
 	print('\t\t\tEncode: only encode')
 	print('\n\t\tEncode: encode each file with only one algoritm (Encode: MD5,SHA1 SHA256,B64,etc)')
 	print('\t\t\tNote: You can use 0 if you dont want to encode a param like: PARAMS: usr,pass ENCODE: 0,MD5\n')
 	print('\tHead: makes a head request to the target you supply')
-	print('\t\tExample: head to https://github.com/EddyNefa')
-	print('\t\tNote: You can use the AS keyword to save it\n\t\t      You must supply the target with http://[...]')
+	print('\t\tExample: head https://github.com/EddyNefa')
+	print('\t\tNote: You can use the AS keyword to save it')
 	print('\n\tOptios: Same as head but with an options request')
 	print('\n\tWappalyze: Grab the technologies used by the target with Wappalyzer')
 	print('\t\tNote: Use -v to also grab versions and categories')
@@ -519,6 +497,13 @@ def locate(words,word):
 
 	bar = words.index(foo)
 	return bar
+
+
+def checkHTTP(url):
+	if not(url.startswith('http://') or url.startswith('https://')):
+		url = 'http://'+url
+
+	return url
 
 
 if __name__ == '__main__':
