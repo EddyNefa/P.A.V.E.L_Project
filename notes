@@ -1,5 +1,6 @@
 meter thread por todos lados
 en teoria aprueba de no-ascii
 #ideas
-http serv en segundo plano
+http serv en segundo plano(creo que el thread se corta
+falta hacer que el output salga)
 mejorar el TAB

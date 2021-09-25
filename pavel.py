@@ -3,6 +3,9 @@
 from concurrent.futures import ThreadPoolExecutor
 from Wappalyzer import Wappalyzer, WebPage
 from termcolor import colored
+import http.server
+import socketserver
+import threading
 import warnings
 import filecmp
 import json
@@ -445,6 +448,21 @@ def main():
 				name.append('$'+foo[0].upper())
 				value.append(foo[1])
 
+		elif (words[0].upper() == 'LISTEN'):
+
+			port = 8000
+			t = threading.Thread(target=httpServ,args=(port,))
+			if (len(words) == 1):
+				t.start()
+			else:
+				try:
+					port = int(words[1])
+				except:
+					print(colored('Sir, the port must be a number','red'))
+					continue
+				t.start()
+
+
 		elif (words[0].upper() == 'HELP'):
 			help()
 
@@ -452,7 +470,12 @@ def main():
 			exit()
 
 		else:
-			os.system('/usr/bin/'+cm)
+			foo = cm
+			foo = foo.replace(' ','')
+			if (foo == ''):
+				continue
+			else:
+				os.system('/usr/bin/'+cm)
 
 
 def help():
@@ -504,6 +527,12 @@ def checkHTTP(url):
 		url = 'http://'+url
 
 	return url
+
+
+def httpServ(port):
+	handler = http.server.SimpleHTTPRequestHandler
+	httpd = socketserver.TCPServer(('',port),handler)
+	httpd.serve_forever
 
 
 if __name__ == '__main__':
