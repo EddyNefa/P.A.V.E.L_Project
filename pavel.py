@@ -5,6 +5,8 @@ from Wappalyzer import Wappalyzer, WebPage
 from termcolor import colored
 import http.server
 import socketserver
+import socket
+import subprocess
 import threading
 import warnings
 import filecmp
@@ -68,6 +70,7 @@ def main():
 			cm = input('#]> ')
 
 		except EOFError:
+			killDemon()
 			exit()
 
 		except KeyboardInterrupt:
@@ -347,7 +350,7 @@ def main():
 				print('\tMD5\n\tSHA1\n\tSHA256\n\tSHA512\n\tB64\n\t0 for none\n')
 
 			elif(words[1].upper() == 'COMMANDS'):
-				print('\tGen\n\tSend\n\tFuzz\n\tHead\n\tOptions\n\tWappalyze\n\tSet\n\tList\n\tHelp\n\tExit\n')
+				print('\tGen\n\tSend\n\tFuzz\n\tHead\n\tOptions\n\tWappalyze\n\tListen\n\tSet\n\tList\n\tHelp\n\tExit\n')
 			else:
 				print(colored("Couldn't find anything to list with "+chr(39)+words[1]+chr(39),"yellow"))
 
@@ -451,22 +454,43 @@ def main():
 		elif (words[0].upper() == 'LISTEN'):
 
 			port = 8000
-			t = threading.Thread(target=httpServ,args=(port,))
-			if (len(words) == 1):
-				t.start()
-			else:
+			if (len(words) != 1):
+
 				try:
 					port = int(words[1])
 				except:
 					print(colored('Sir, the port must be a number','red'))
 					continue
-				t.start()
+
+				if (port < 1 or port > 65535):
+					print(colored('Sir, the port has to be between 1 and 65535','red'))
+					continue
+
+				elif(port < 1024):
+					print(colored('Sir, I am not premited to use a port smaller than 1024','yellow'))
+					continue
+
+			try:
+				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				t = ('127.0.0.1',port)
+				open = s.connect_ex(t)
+				if (open == 0):
+					print(colored('Port already used','yellow'))
+					continue
+
+			except:
+				print(colored('An unexpected error occurred','red'))
+				continue
+
+
+			os.system('python3.9 listen.py '+str(port)+' &')
 
 
 		elif (words[0].upper() == 'HELP'):
 			help()
 
 		elif (words[0].upper() == 'EXIT'):
+			killDemon()
 			exit()
 
 		else:
@@ -475,7 +499,7 @@ def main():
 			if (foo == ''):
 				continue
 			else:
-				os.system('/usr/bin/'+cm)
+				os.system(cm)
 
 
 def help():
@@ -500,6 +524,8 @@ def help():
 	print('\n\tWappalyze: Grab the technologies used by the target with Wappalyzer')
 	print('\t\tNote: Use -v to also grab versions and categories')
 	print('\t\tExample: wappalyze https://github.com/EddyNefa [-v]')
+	print('\n\tListen: set a port listener in background for reciveing external connections ')
+	print('\t\tExample: listen [port] (if none 8000)')
 	print('\n\tSet: Set a variable to use instead a tedious value')
 	print('\t\tExample: set target=https://github.com/EddyNefa')
 	print('\t\tNote: to call the variable use $ and the var name')
@@ -528,11 +554,16 @@ def checkHTTP(url):
 
 	return url
 
+def killDemon():
+	try:
+		pid = str(subprocess.check_output(['pidof','python3.9']))
+		pid = pid.replace('b','')
+		pid = pid.replace('\\','')
+		pid = pid.replace('n','')
+		os.system('kill '+str(pid))
 
-def httpServ(port):
-	handler = http.server.SimpleHTTPRequestHandler
-	httpd = socketserver.TCPServer(('',port),handler)
-	httpd.serve_forever
+	except:
+		pass
 
 
 if __name__ == '__main__':
