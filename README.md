@@ -17,6 +17,9 @@ Another important part in the objective of P.A.V.E.L is to make different reques
 ### Loading to the proxy
 My favorite part is this one. Did you ever where using dirb or gobuster for discovering content and you thought if there was a way for passing the output to your proxy? well, now there is one. Load every file to your proxy in seconds with P.A.V.E.L!
 
+### Port Listening
+You can set a listener in background for those situation where you need to test command injection or steal a cookie with XSS. This feature listen quietly to a port and, when something is recived, the output is printed at real time
+
 ## **Installation**
 * git clone https://github.com/EddyNefa/P.A.V.E.L_Project.git
 
