@@ -27,6 +27,8 @@ You can set a listener in background for those situation where you need to test 
 
 * python3 -m pip -r requirements.txt
 
-* chmod +x pavel
+* sudo python3 setup.py
 
-* ./pavel
+* pavel
+
+It is very important to run the setup with root permissions. You can use pavel in every directory because it is in the path by default
