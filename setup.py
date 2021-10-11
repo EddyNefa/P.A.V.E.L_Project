@@ -14,7 +14,7 @@ location = run('/usr/bin/pwd', stdout=PIPE, stderr=PIPE, universal_newlines=True
 location = location.stdout.replace('\n','')
 location += '/'
 
-fileLines[518] = "\t\t\tpath = "+ chr(39) + location + chr(39) + "\n"
+fileLines[521] = "\t\t\tpath = "+ chr(39) + location + chr(39) + "\n"
 
 file = open('pavel.py', 'w')
 file.writelines(fileLines)
