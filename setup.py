@@ -3,6 +3,10 @@
 from subprocess import PIPE, run
 import os
 
+if (os.getuid() != 0):
+  print('You need to be root!')
+  exit()
+  
 file = open('pavel.py','r')
 fileLines = file.readlines()
 
