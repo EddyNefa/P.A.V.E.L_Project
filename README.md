@@ -9,7 +9,9 @@ P.A.V.E.L is a versatile, and helpful open source web testing framework. It prov
 
 ### Improve fuzzing
 One of the main functions of this framework is to improve fuzzing tools through parsonalized wordlists; "if Muhammad doesn't go to the mountain, the mountain goes to Muhammad". With this method, every tool is perfect for fuzzing. A common example is when you want to use a fast tool, but it has no special modes and options; Now, this options can be combined with your wordlist, and exported as a file ready to fuzz.
-Some examples include, burp intruder modes, encode and hashing, generating numbers and much more
+Some examples include, burp intruder modes, encode and hashing, generating numbers and much more.
+
+**Tip For ZAP (and others):** Having created your wordlist, in the prozy fuzzer, use only one param and load the wordlist.
 
 ### Requests
 Another important part in the objective of P.A.V.E.L is to make different requests easy. Yo can make quickly HEAD or OPTIONS requests, see the output and save it in a file. Moreover, it is possible to use wappalyzer to detect tecnologies, all with this console.
