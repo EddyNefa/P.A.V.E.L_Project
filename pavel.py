@@ -31,26 +31,27 @@ def main():
 	banner+='                           hMy  mM/                         \n'
 	banner+='                          yMh    NN:                        \n'
 	banner+='                         oMd`    :NN-                       \n'
-	banner+='                        +Mm.      /Mm.                     \n'
-	banner+='                      +sMm.        +Mm+            \n'
-	banner+='           -syhddmNNmdhyo.          :shdmNNNmddhyo- \n'
-	banner+='          -MMo                                 +yMd  \n'       
-	banner+='          `hMd:  By EddyNefa          V  1. 0 `+NM+   \n'      
-	banner+='            :dMh-                            +mMy.     \n'     
-	banner+='              /mMy.                        /mMy.        \n'    
-	banner+='               `+mMs.                    :dMh-           \n'   
-	banner+='                 `oNN-                  oMd:              \n'  
-	banner+='                  `NM-                  yMs                \n' 
+	banner+='                        +Mm.      /Mm.                      \n'
+	banner+='                      +sMm.        +Mm+                     \n'
+	banner+='           -syhddmNNmdhyo.          :shdmNNNmddhyo-         \n'
+	banner+='          -MMo                                 +yMd         \n'       
+	banner+='          `hMd:  By EddyNefa          V  1. 0 `+NM+         \n'      
+	banner+='            :dMh-                            +mMy.          \n'     
+	banner+='              /mMy.                        /mMy.            \n'    
+	banner+='               `+mMs.                    :dMh-              \n'   
+	banner+='                 `oNN-                  oMd:                \n'  
+	banner+='                  `NM-                  yMs                 \n' 
 	banner+='                  :MN                   :Mm                 \n'
 	banner+='                  sMy                   `NM-                \n'
 	banner+='                  mM:       -+ys/.       hMo                \n'
 	banner+='                 -MN`   ./sdmdsymmdo-    /Mm                \n'
 	banner+='                 oMh`-+hmmh+-`  `:odmmy/..MM.               \n'
 	banner+='                 :mmdmds:`          ./ymmdNd`               \n'
-	banner+='                  .::-                 `::-`'
-	banner+='\n'
+	banner+='                  .::-                 `::-`                \n'
 	banner+='For bugs https://github.com/EddyNefa/\n'
+	
 
+	#args and variables
 	name = []
 	value = []
 	b = 0
@@ -71,6 +72,7 @@ def main():
 			cm = input('#]> ')
 			cm = cm.strip()
 
+		#if Ctrl-D is pressed
 		except EOFError:
 			killDemon()
 			exit()
@@ -103,6 +105,7 @@ def main():
 
 		words = cm.split(' ')
 
+		#Commands
 		if(words[0].upper() == 'GEN'):
 
 			if(len(words) < 4 or len(words) > 5):
