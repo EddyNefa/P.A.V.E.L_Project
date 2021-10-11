@@ -516,7 +516,7 @@ def main():
 				print(colored('An unexpected error occurred','red'))
 				continue
 
-			path = '/home/nefa/scripts/python/fuzzerUpgrade/'
+			path = 'FOO'
 			os.system('python3.9 '+path+'listen.py '+str(port)+' &')
 
 
