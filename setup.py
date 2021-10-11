@@ -16,7 +16,7 @@ file = open('pavel.py', 'w')
 file.writelines(fileLines)
 file.close
 
-#creating a executable file
+#creating an executable file
 os.system('echo > pavel')
 file = open('pavel', 'w')
 foo = f'#!/bin/bash\n\n{location}pavel.py $1\n\n'
@@ -26,4 +26,4 @@ file.close
 #giving exec permissions
 os.system('chmod +x pavel pavel.py')
 os.system('mv pavel /usr/bin')
-print('You can use fduck now!')
+print('Everything ready!')
