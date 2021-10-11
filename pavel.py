@@ -1,5 +1,6 @@
 #!/bin/python3
 
+from subprocess import PIPE, run
 from concurrent.futures import ThreadPoolExecutor
 from Wappalyzer import Wappalyzer, WebPage
 from termcolor import colored
@@ -68,6 +69,7 @@ def main():
 	while(True):
 		try:
 			cm = input('#]> ')
+			cm = cm.strip()
 
 		except EOFError:
 			killDemon()
@@ -132,6 +134,9 @@ def main():
 				i = locate(words,'AS')
 				out = words[i+1]
 
+			if os.access(out,os.F_OK) and not os.access(out,os.W_OK):
+				print(colored('sir, this file is forbiden','yellow'))
+				continue
 
 			increase = 1
 			if ' INCREASE=' in cm.upper():
@@ -168,8 +173,16 @@ def main():
 				print(colored('Sir, the port must be a number','yellow'))
 				continue
 
+			if (port > 65535):
+				print(colored('Port must be between 1 and 65535','yellow'))
+				continue
+
 			if not (os.path.isfile(words[1])):
 				print(colored('File '+ words[1]+ " doesn't exist","red"))
+				continue
+
+			elif not os.access(words[1],os.R_OK):
+				print(colored('Sir, this file is forbiden','yellow'))
 				continue
 
 			url = checkHTTP(words[3])
@@ -177,6 +190,10 @@ def main():
 			lines = file.readlines()
 			ext = 0
 			t = 90
+			if (len(lines) < 1):
+				print(colored('Sir, this file is empty','yellow'))
+				continue
+
 			if (len(lines) < 90):
 				t = len(lines)
 
@@ -195,6 +212,7 @@ def main():
 				r = s.get(url, proxies=proxies, verify=False)
 
 			except:
+				print(colored('Invalid  proxy','red'))
 				continue
 
 			for l in lines:
@@ -219,6 +237,14 @@ def main():
 				if not (os.path.isfile(f)):
 					print(colored('File '+f+ " doesn't exist","red"))
 					foo = 1
+
+				elif not (os.access(f,os.R_OK)):
+					print(colored('Sir, this file is forbiden','yellow'))
+					foo = 1
+
+				elif (os.path.getsize(f) == 0):
+					print(colored('Sir, file '+f+' is empty ','yellow'))
+					continue
 
 			if(len(files) != len(set(files))):
 				print(colored('Sir files need to be different. I recomend yo made a copy','yellow'))
@@ -326,8 +352,12 @@ def main():
 			if (foo == 1):
 				continue
 
+			if os.access(out,os.F_OK) and not os.access(out,os.W_OK):
+				print(colored('Sir, this file is forbiden','yellow'))
+				continue
 
-			print(words[1]+' '+str(m)+' '+params+' '+str(encode)+' '+enc+' '+out)
+
+			print(colored('This could take a while...','yellow'))
 			fuzz.fuzz(words[1],m,params,encode,enc,out)
 			if(m == 2 and enc):
 				for f in files:
@@ -374,6 +404,10 @@ def main():
 			if (' AS ' in cm.upper()):
 				out = words[3]
 				bool = True
+
+			if not os.access(out,os.W_OK):
+				print(colored('Sir, this file is forbiden','yellow'))
+				continue
 
 			url = checkHTTP(words[1])
 			req.req(method,bool,out,url)
@@ -473,8 +507,8 @@ def main():
 			try:
 				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				t = ('127.0.0.1',port)
-				open = s.connect_ex(t)
-				if (open == 0):
+				isopen = s.connect_ex(t)
+				if (isopen == 0):
 					print(colored('Port already used','yellow'))
 					continue
 
@@ -482,8 +516,8 @@ def main():
 				print(colored('An unexpected error occurred','red'))
 				continue
 
-
-			os.system('python3.9 listen.py '+str(port)+' &')
+			path = '/home/nefa/scripts/python/fuzzerUpgrade/'
+			os.system('python3.9 '+path+'listen.py '+str(port)+' &')
 
 
 		elif (words[0].upper() == 'HELP'):
@@ -506,34 +540,34 @@ def help():
 	print('You can use an option betwen:')
 	print('\n\tGen: Generate numbers from a given range')
 	print('\t\tExample: gen 1-10 as numbers.txt\n')
-	print('\t\tYou can modify increase between the numbers with the increase keyword')
+	print('\t\tYou can modify the increase between the numbers with the increase keyword')
 	print('\t\tExample: gen 2-8 as numbers.txt increase=2')
-	print('\n\tSend: Send a get request with a file given to a proxy like: http://foo.com/<file>')
+	print('\n\tSend: Send a given file with discovered content in a host to your attack proxy')
 	print('\t\tExample: send file.txt to https://github.com/EddyNefa 8080')
 	print("\n\tFuzz: Prepare custom fuzzer files with different options (as burp intruder's modes)")
-	print('\n\t\tSyntaxis: fuzz <FILE(S)> with <MODE> PARAMS: <PARAM1>,<PARAM2>, ENCODE: (OPTIONAL) <ALGORITM> AS <OUTPUT>')
+	print('\n\t\tSyntaxis: fuzz <FILE(S)> with <MODE> PARAMS: <PARAM1>,<PARAM2>,<PARAMx> ENCODE: (OPTIONAL) <ALGORITM> AS <OUTPUT>')
 	print('\t\tMode:\n\t\t\tBattery: same file in all params (<PARAM1>=FILE,<PARAM2>=FILE)')
-	print('\t\t\tPitchfork: each param needs a different file (<PARM1>=FILE1<PARAM2>=FILE2)')
+	print('\t\t\tPitchfork: each param uses a different file (<PARM1>=FILE1<PARAM2>=FILE2)')
 	print('\t\t\tEncode: only encode')
 	print('\n\t\tEncode: encode each file with only one algoritm (Encode: MD5,SHA1 SHA256,B64,etc)')
 	print('\t\t\tNote: You can use 0 if you dont want to encode a param like: PARAMS: usr,pass ENCODE: 0,MD5\n')
-	print('\tHead: makes a head request to the target you supply')
+	print('\tHead: makes a head request to the target you supplied')
 	print('\t\tExample: head https://github.com/EddyNefa')
 	print('\t\tNote: You can use the AS keyword to save it')
-	print('\n\tOptios: Same as head but with an options request')
-	print('\n\tWappalyze: Grab the technologies used by the target with Wappalyzer')
+	print('\n\tOptions: Same as head but with an options request')
+	print('\n\tWappalyze: Grab the technologies used by your target with Wappalyzer')
 	print('\t\tNote: Use -v to also grab versions and categories')
 	print('\t\tExample: wappalyze https://github.com/EddyNefa [-v]')
 	print('\n\tListen: set a port listener in background for reciveing external connections ')
 	print('\t\tExample: listen [port] (if none 8000)')
-	print('\n\tSet: Set a variable to use instead a tedious value')
+	print('\n\tSet: Set a variable to use it instead a tedious value')
 	print('\t\tExample: set target=https://github.com/EddyNefa')
 	print('\t\tNote: to call the variable use $ and the var name')
-	print('\t\tExample: set target=https://github.com/EddyNefa')
+	print('\t\tExample: head $target')
 	print('\n\tList: List available things:')
 	print('\n\t\t\t-Modes\n\t\t\t-Algs/Algoritms\n\t\t\t-Commands')
 	print('\n\t\tExample: List Modes')
-	print('\n\tHelp: Show this help menu')
+	print('\n\tHelp: Show this menu')
 	print('\n\tExit: Exit the program\n')
 
 def locate(words,word):
@@ -568,3 +602,4 @@ def killDemon():
 
 if __name__ == '__main__':
 	main()
+4
